@@ -1,0 +1,10 @@
+{
+  "projectId": "agent-bwai",
+  "appId": "1:771131345443:web:ecd2b7b95629b23998bf96",
+  "apiKey": "AIzaSyDBvolY9ApydTMAV5G310I7Zxhmp8qtrAE",
+  "authDomain": "agent-bwai.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-b523851e-7de7-4555-977b-9109895eefe3",
+  "storageBucket": "agent-bwai.firebasestorage.app",
+  "messagingSenderId": "771131345443",
+  "measurementId": ""
+}

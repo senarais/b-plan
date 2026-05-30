@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Business": {
+      "title": "UMKM Business Details",
+      "description": "Stores details about the small business / product profile.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the business profile."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who owns this profile."
+        },
+        "productName": {
+          "type": "string",
+          "description": "Product or brand name."
+        },
+        "targetAudience": {
+          "type": "string",
+          "description": "Target demographics or audience description."
+        },
+        "businessCategory": {
+          "type": "string",
+          "description": "Industry category or market segment."
+        },
+        "tone": {
+          "type": "string",
+          "description": "Social media communication tone."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp."
+        }
+      },
+      "required": ["id", "userId", "productName", "targetAudience", "createdAt"]
+    },
+    "ContentCalendar": {
+      "title": "UMKM Content Calendar",
+      "description": "Stores saved 7-day social media content planners.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the content calendar."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the owner."
+        },
+        "productName": {
+          "type": "string",
+          "description": "The product/brand name used as source context."
+        },
+        "targetAudience": {
+          "type": "string",
+          "description": "Target audience."
+        },
+        "businessCategory": {
+          "type": "string"
+        },
+        "tone": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of daily planners"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["id", "userId", "productName", "targetAudience", "items", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/businesses/{businessId}": {
+      "schema": "Business",
+      "description": "Collection of business/product setup profiles."
+    },
+    "/calendars/{calendarId}": {
+      "schema": "ContentCalendar",
+      "description": "Collection of AI-generated content planners."
+    }
+  }
+}

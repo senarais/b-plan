@@ -1,0 +1,6 @@
+{
+  "name": "UMKM Social Media Manager",
+  "description": "A 7-day content planner tailored for Indonesian UMKM/small businesses. Securely call Gemini AI to generate high-conversion captions, visual ideas, and publish events, with Google Calendar synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

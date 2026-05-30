@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helper Functions ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // --- Validation Rules for Business Entity ---
+    function isValidBusiness(data) {
+      return data.keys().hasAll(['id', 'userId', 'productName', 'targetAudience', 'createdAt'])
+        && data.keys().size() <= 7
+        && data.id is string
+        && data.id.size() <= 128
+        && data.userId == request.auth.uid
+        && data.productName is string
+        && data.productName.size() > 0
+        && data.productName.size() <= 150
+        && data.targetAudience is string
+        && data.targetAudience.size() > 0
+        && data.targetAudience.size() <= 1000
+        && (data.businessCategory == null || (data.businessCategory is string && data.businessCategory.size() <= 150))
+        && (data.tone == null || (data.tone is string && data.tone.size() <= 150));
+    }
+
+    // --- Validation Rules for Calendar Entity ---
+    function isValidCalendar(data) {
+      return data.keys().hasAll(['id', 'userId', 'productName', 'targetAudience', 'items', 'createdAt'])
+        && data.keys().size() <= 8
+        && data.id is string
+        && data.id.size() <= 128
+        && data.userId == request.auth.uid
+        && data.productName is string
+        && data.productName.size() <= 150
+        && data.targetAudience is string
+        && data.targetAudience.size() <= 1000
+        && data.items is list
+        && data.items.size() <= 10
+        && (data.businessCategory == null || (data.businessCategory is string && data.businessCategory.size() <= 150))
+        && (data.tone == null || (data.tone is string && data.tone.size() <= 150));
+    }
+
+    // --- Path Routes ---
+
+    // Businesses
+    match /businesses/{businessId} {
+      allow get: if isSignedIn() && isOwner(resource.data.userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+        && isValidId(businessId) 
+        && isValidBusiness(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+        
+      allow update: if isSignedIn()
+        && isValidId(businessId)
+        && isOwner(resource.data.userId)
+        && isValidBusiness(request.resource.data)
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.createdAt == resource.data.createdAt;
+        
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+    // Calendars
+    match /calendars/{calendarId} {
+      allow get: if isSignedIn() && isOwner(resource.data.userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() 
+        && isValidId(calendarId) 
+        && isValidCalendar(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+        
+      allow update: if isSignedIn()
+        && isValidId(calendarId)
+        && isOwner(resource.data.userId)
+        && isValidCalendar(request.resource.data)
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.createdAt == resource.data.createdAt;
+        
+      allow delete: if isSignedIn() && isOwner(resource.data.userId);
+    }
+
+  }
+}
